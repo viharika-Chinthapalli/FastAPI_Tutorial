@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Edit note" if note and note.id else "New note" }}{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+    <a class="back-link" href="{{ '/notes/' ~ note.id if note and note.id else '/' }}">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+    <h1>{{ "Edit note" if note and note.id else "New note" }}</h1>
+
+    {% if error %}
+    <div class="alert alert-warning" role="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{{ '/notes/' ~ note.id if note and note.id else '/notes' }}">
+        <div class="mb-3">
+            <label class="form-label" for="title">Title</label>
+            <input class="form-control form-control-lg" id="title" name="title" required
+                   value="{{ note.title if note else '' }}" placeholder="Meeting notes, grocery list…">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="content">Details</label>
+            <textarea class="form-control" id="content" name="content" rows="10"
+                      placeholder="Write the rest of the note here.">{{ note.content if note else '' }}</textarea>
+        </div>
+        <fieldset class="mb-4">
+            <legend class="form-label">Color</legend>
+            <div class="color-picker">
+                {% for color in colors %}
+                <label class="color-option color-{{ color }}">
+                    <input type="radio" name="color" value="{{ color }}"
+                           {% if (note.color if note else 'amber') == color %}checked{% endif %}>
+                    <span>{{ color }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-ink">Save note</button>
+            <a class="btn btn-outline-secondary" href="/">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

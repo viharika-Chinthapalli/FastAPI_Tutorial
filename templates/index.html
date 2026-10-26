@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Notes{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Your notes</h1>
+        <p class="lede">
+            {% if q %}
+                {{ notes|length }} result{{ "s" if notes|length != 1 }} for “{{ q }}”
+            {% else %}
+                {{ notes|length }} saved note{{ "s" if notes|length != 1 }}
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+{% if notes %}
+<div class="row g-4">
+    {% for note in notes %}
+    <div class="col-md-6 col-xl-4">
+        <article class="note-card color-{{ note.color }}">
+            <a class="note-card-link" href="/notes/{{ note.id }}">
+                <h2>{{ note.title }}</h2>
+                <p>{{ note.content or "No extra details yet." }}</p>
+            </a>
+            <div class="note-card-footer">
+                <time>
+                    {% if note.updated_at %}
+                        {{ note.updated_at.strftime("%b %d, %Y") }}
+                    {% endif %}
+                </time>
+                <div class="note-actions">
+                    <a class="btn btn-sm btn-ghost" href="/notes/{{ note.id }}/edit">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <button class="btn btn-sm btn-ghost text-danger" data-bs-toggle="modal" data-bs-target="#delete-{{ note.id }}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="modal fade" id="delete-{{ note.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Delete this note?</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    “{{ note.title }}” will be removed permanently.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Keep it</button>
+                    <form action="/notes/{{ note.id }}/delete" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="bi bi-journal-plus"></i>
+    {% if q %}
+        <h2>No matching notes</h2>
+        <p>Nothing matched “{{ q }}”. Try a different search or write a new note.</p>
+        <a class="btn btn-ink" href="/">Clear search</a>
+    {% else %}
+        <h2>Start a notebook</h2>
+        <p>Capture ideas, lists, and reminders. Your first note is one click away.</p>
+        <a class="btn btn-ink" href="/notes/new">Create a note</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

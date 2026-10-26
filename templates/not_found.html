@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Note not found{% endblock %}
+
+{% block content %}
+<div class="empty-state">
+    <i class="bi bi-journal-x"></i>
+    <h2>Note not found</h2>
+    <p>That note may have been deleted, or the link is no longer valid.</p>
+    <a class="btn btn-ink" href="/">Back to notes</a>
+</div>
+{% endblock %}
